@@ -21,8 +21,9 @@
   - そのまま送る
 - と思ったけど1つ(詳細で2つ)しかなさそう
   - MediaRecorderでwebmにしてそれを送る
+   - https://github.com/mganeko/wmls/blob/master/views/golive.ejs
   - audioOnProcessでバッファを送る
-
+   - AudioBufferをそのまま？もしくは中のデータをint16にしてそれぞれ？
 ## 試す
 - AudioBufferをsocket.emitする方法がわからん
 - WebSocket(socket.io)を適当に立てておさらい
