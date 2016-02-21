@@ -7,16 +7,19 @@
 - WebRTCはもちろん使えないが、WebSocketが使えるならなんとかなるのでは！
   - Binaryで送るとかMediaRecorderでファイルにして送るとか
 
-## 調べる・試す
+## 調べる
 - 先人の資料を読む
   - https://blog.agektmr.com/2012/03/websocket.html
     - https://github.com/agektmr/AudioStreamer
   - http://blog.livedoor.jp/kotesaki/archives/1544696.html
   - https://github.com/scottstensland/websockets-streaming-audio
   - https://github.com/binaryjs/binaryjs
+  - https://github.com/muaz-khan/WebRTC-Experiment/tree/master/RecordRTC
 - やり方は2つありそう
   - その場で音を録音して、それをバイナリとして送る
   - そのまま送る
+
+## 試す
 - WebSocket(socket.io)を適当に立てておさらい
   - もれなく実機で見る
 - バイナリメッセージングとは
