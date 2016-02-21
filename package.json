@@ -1,0 +1,22 @@
+{
+  "name": "8jj",
+  "version": "1.0.0",
+  "description": "8JoJimaで開発合宿したやつ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/leader22/8jj.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/leader22/8jj/issues"
+  },
+  "homepage": "https://github.com/leader22/8jj#readme",
+  "dependencies": {
+    "socket.io": "^1.4.5"
+  }
+}
