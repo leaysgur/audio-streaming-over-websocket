@@ -20,11 +20,11 @@ function convertFloat32ToInt16(buffer) {
 var pubApp = {
   el: '#jsPubApp',
   data: {
-    socket:  null,
-    stream:  null,
-    ctx:     null,
-    audio:   { source: null, processor: null },
-    userNum: 0
+    socket: null,
+    stream: null,
+    ctx:    null,
+    audio:  { source: null, processor: null },
+    subNum: 0
   },
   methods: {
     onMic: function() {
@@ -64,9 +64,8 @@ var pubApp = {
       var $data = this.$data;
       this.ctx = new AudioContext();
       this.socket = io(global.SOCKET_SERVER);
-      this.socket.emit('pub:connect');
       this.socket.on('subNum', function(num) {
-        $data.userNum = num;
+        $data.subNum = num;
       });
     }
   },

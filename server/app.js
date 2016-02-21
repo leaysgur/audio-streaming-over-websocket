@@ -13,6 +13,7 @@ let getSubNum = () => {
 io.on('connection', (socket) => {
   let socketId = socket.id;
   console.log(`user connected -> id: ${socketId}`);
+
   notifySubNum();
 
   socket.on('sub:connect', () => {
@@ -31,6 +32,7 @@ io.on('connection', (socket) => {
     }
     notifySubNum();
   });
+
 
   function notifySubNum() {
     socket.emit('subNum', getSubNum());

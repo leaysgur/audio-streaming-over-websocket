@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-  <title>Subscriver</title>
+  <title>Subscriber</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.1.0/milligram.min.css">
   <link rel="stylesheet" href="../cmn/base.css">
 </head>
@@ -12,10 +12,19 @@
   <section id="jsSubApp" class="container">
     <h2>SubApp</h2>
 
-    <h3>Mic</h3>
+    <h3>Subscribe</h3>
 
-    <button class="button" @click="onMic">On</button>
-    <button class="button button-outline" @click="offMic">Off</button>
+    <button class="button" @click="startSub">Start</button>
+    <button class="button button-outline" @click="stopSub">Stop</button>
+
+    <h3>Stat</h3>
+
+    <p>
+      Audio is {{state.audioReady ? '' : 'NOT '}}ready.
+    </p>
+    <p>
+      Subscribers: {{subNum}}
+    </p>
 
   </section>
 
