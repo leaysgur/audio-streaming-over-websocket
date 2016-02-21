@@ -10,8 +10,12 @@
 ## 調べる・試す
 - 先人の資料を読む
   - https://blog.agektmr.com/2012/03/websocket.html
+    - https://github.com/agektmr/AudioStreamer
   - http://blog.livedoor.jp/kotesaki/archives/1544696.html
-  - https://github.com/agektmr/AudioStreamer
   - https://github.com/scottstensland/websockets-streaming-audio
   - https://github.com/binaryjs/binaryjs
-- タスク整理
+- WebSocket(socket.io)を適当に立てておさらい
+  - もれなく実機で見る
+- バイナリメッセージングとは
+- ローカルの音を拾ってサーバーに投げる
+- もらった音を鳴らす
