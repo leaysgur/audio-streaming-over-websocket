@@ -63,7 +63,7 @@ var pubApp = {
     _hookCreated: function() {
       var $data = this.$data;
       this.ctx = new AudioContext();
-      this.socket = io('http://localhost:3000');
+      this.socket = io(global.SOCKET_SERVER);
       this.socket.emit('pub:connect');
       this.socket.on('subNum', function(num) {
         $data.userNum = num;
