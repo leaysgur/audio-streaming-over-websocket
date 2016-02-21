@@ -14,6 +14,9 @@
   - http://blog.livedoor.jp/kotesaki/archives/1544696.html
   - https://github.com/scottstensland/websockets-streaming-audio
   - https://github.com/binaryjs/binaryjs
+- やり方は2つありそう
+  - その場で音を録音して、それをバイナリとして送る
+  - そのまま送る
 - WebSocket(socket.io)を適当に立てておさらい
   - もれなく実機で見る
 - バイナリメッセージングとは
