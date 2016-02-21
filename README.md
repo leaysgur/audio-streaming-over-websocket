@@ -9,6 +9,7 @@
 
 ## 調べる
 - 先人の資料を読む
+  - https://subvisual.co/blog/posts/39-tutorial-html-audio-capture-streaming-to-node-js-no-browser-extensions
   - https://blog.agektmr.com/2012/03/websocket.html
     - https://github.com/agektmr/AudioStreamer
   - http://blog.livedoor.jp/kotesaki/archives/1544696.html
@@ -23,6 +24,7 @@
   - audioOnProcessでバッファを送る
 
 ## 試す
+- AudioBufferをsocket.emitする方法がわからん
 - WebSocket(socket.io)を適当に立てておさらい
   - もれなく実機で見る
 - バイナリメッセージングとは
