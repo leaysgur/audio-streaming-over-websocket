@@ -26,6 +26,7 @@
    - AudioBufferをそのまま？もしくは中のデータをint16にしてそれぞれ？
 
 ## TODO
+- npm server
+- browsrify
 - UIのブラッシュアップ
-- Next
-  - ラジオっぽくするべくストリームを切り替えたりするか
+- スライドと記事
