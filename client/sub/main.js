@@ -58,12 +58,12 @@ var subApp = {
       source.connect(audio.gain);
 
       var currentTime = ctx.currentTime;
-      if (currentTime < this._startTime) {
-        source.start(this._startTime);
-        this._startTime += audioBuffer.duration;
+      if (currentTime < this.$data._startTime) {
+        source.start(this.$data._startTime);
+        this.$data._startTime += audioBuffer.duration;
       } else {
-        source.start(this._startTime);
-        this._startTime = currentTime + audioBuffer.duration;
+        source.start(this.$data._startTime);
+        this.$data._startTime = currentTime + audioBuffer.duration;
       }
     },
 
