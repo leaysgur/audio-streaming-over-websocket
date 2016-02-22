@@ -40,7 +40,8 @@ var pubApp = {
       if (this.audio.source && this.audio.processor) { return; }
       this.audio.source    = this.ctx.createMediaStreamSource(this.stream);
       this.audio.analyser  = this.ctx.createAnalyser();
-      this.audio.processor = this.ctx.createScriptProcessor(1024);
+      // モノラル
+      this.audio.processor = this.ctx.createScriptProcessor(1024, 1, 1);
       this.audio.gain      = this.ctx.createGain();
 
       this.audio.analyser.smoothingTimeConstant = 0.4;
@@ -68,19 +69,16 @@ var pubApp = {
     },
     _onAudioProcess: function(ev) {
       var socket = this.socket;
+      var buffer = new Float32Array(1024);
       var inputBuffer  = ev.inputBuffer;
       var outputBuffer = ev.outputBuffer;
-      var buffers = [];
-      for (var ch = 0; ch < outputBuffer.numberOfChannels; ch++) {
-        var inputData  = inputBuffer.getChannelData(ch);
-        var outputData = outputBuffer.getChannelData(ch);
-        buffers[ch] = new Float32Array(1024);
+      var inputData  = inputBuffer.getChannelData(0);
+      var outputData = outputBuffer.getChannelData(0);
 
-        for (var sample = 0; sample < inputBuffer.length; sample++) {
-          outputData[sample] = buffers[ch][sample] = inputData[sample];
-        }
-      }
-      socket.emit('audio', buffers[0].buffer);
+      outputData.set(inputData);
+      buffer.set(inputData);
+
+      socket.emit('audio', buffer.buffer);
     },
     _drawInputSpectrum: function() {
       if (!this.audio.analyser) { return; }

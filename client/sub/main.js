@@ -21,19 +21,18 @@ var subApp = {
       this.socket.on('audio', this._handleAudioBuffer);
     },
     stopSub: function() {
-      this.socket.off('audio');
+      this.socket.off('audio', this._handleAudioBuffer);
     },
     _handleAudioBuffer: function(buf) {
-      var audio_f32 = new Float32Array(buf);
-      var audioBuffer = this.ctx.createBuffer(1, audio_f32.length, 44100);
-      audioBuffer.getChannelData(0).set(audio_f32);
+      var f32Audio = new Float32Array(buf);
+      var audioBuffer = this.ctx.createBuffer(1, f32Audio.length, 44100);
+      audioBuffer.getChannelData(0).set(f32Audio);
 
       var source = this.ctx.createBufferSource();
       source.buffer = audioBuffer;
       source.connect(this.ctx.destination);
 
       var currentTime = this.ctx.currentTime;
-
       if (currentTime < this.startTime) {
         source.start(this.startTime);
         this.startTime += audioBuffer.duration;
@@ -53,7 +52,7 @@ var subApp = {
       });
     },
     _hookAttached: function() {
-      this.$el.addEventListener('click', this._readyAudio, false);
+      document.body.addEventListener('touchstart', this._readyAudio, false);
     },
     _readyAudio: function() {
       var that = this;
@@ -65,7 +64,7 @@ var subApp = {
         osc.disconnect();
         osc = null;
         that.state.audioReady = true;
-        that.$el.removeEventListener('click', that._readyAudio, false);
+        document.body.removeEventListener('touchstart', that._readyAudio, false);
       }, 400);
     }
   },
