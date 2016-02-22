@@ -1,9 +1,10 @@
 {
   "name": "audio-streaming-over-websocket",
   "version": "1.0.0",
-  "description": "8JoJimaで開発合宿したやつ",
+  "description": "Audio streaming over WebSocket",
   "main": "server/index.js",
   "scripts": {
+    "postinstall": "npm run build",
     "dev-js:pub": "watchify ./client/_src/script/pub/main.js -v -o ./client/pub/app.js",
     "dev-js:sub": "watchify ./client/_src/script/sub/main.js -v -o ./client/sub/app.js",
     "dev-js": "parallelshell \"npm run dev-js:pub\" \"npm run dev-js:sub\"",
@@ -16,7 +17,8 @@
     "build-css:pub": "postcss -c ./.postcssrc.json -o ./client/pub/app.css",
     "build-css:sub": "postcss -c ./.postcssrc.json -o ./client/sub/app.css",
     "build-css": "parallelshell \"npm run build-css:pub\" \"npm run build-css:sub\"",
-    "dev": "parallelshell \"npm run dev-js\" \"npm run dev-css\""
+    "dev": "parallelshell \"npm run dev-js\" \"npm run dev-css\"",
+    "build": "parallelshell \"npm run build-js\" \"npm run build-css\""
   },
   "repository": {
     "type": "git",

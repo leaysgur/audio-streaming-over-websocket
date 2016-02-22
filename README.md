@@ -1,11 +1,12 @@
-# 8jj
-8JoJimaで開発合宿したやつ
+# audio-streaming-over-websocket
+2016春の開発合宿 in 八丈島での成果物。
 
-## やりたいこと
+## やりたかったこと
 - iOSのモバイル端末Aで、別のPC端末Bで鳴ってる音を流したい
-- イカデンワとかSkypeとか、PCで鳴ってる音をそのまま聴く専のクライアント
+- イカデンワとかSkypeとか、PCで鳴ってる音をそのまま聴く専のクライアントが欲しい
 - WebRTCはもちろん使えないが、WebSocketが使えるならなんとかなるのでは！
-  - Binaryで送るとかMediaRecorderでファイルにして送るとか
+  - Binaryで送るとかMediaRecorderでファイルにして送るとかなんとかできないか
+- これでiOSが拾えるだけでもすごい裾野が広がると思うけどどうですかね
 
 ## 調べる
 - 先人の資料を読む
@@ -25,8 +26,11 @@
    - audioOnProcessでバッファを送る
    - AudioBufferをそのまま？もしくは中のデータをint16にしてそれぞれ？
 
+## Memo
+- Socket.IO用のサーバーは実装してある
+- ただ`/client/pub/`や`/client/sub/`にアクセスしたときにページを返すサーバーは実装してない
+  - Node.jsでやる理由がないから
+
 ## TODO
-- npm server
-- browsrify
 - UIのブラッシュアップ
-- スライドと記事
+- 発表スライドと記事
