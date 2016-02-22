@@ -27,19 +27,19 @@
       :disabled="!state.isMicOn"
     >Off</button>
 
-    <h3>Record</h3>
+    <h3>Publish</h3>
 
     <button
       class="button"
-      :class="{ 'button-outline': !state.isRec }"
-      @click="startRec"
-      :disabled="state.isRec"
+      :class="{ 'button-outline': !state.isPub }"
+      @click="startPub"
+      :disabled="state.isPub"
     >Start</button>
     <button
       class="button"
-      :class="{ 'button-outline': state.isRec }"
-      @click="stopRec"
-      :disabled="!state.isRec"
+      :class="{ 'button-outline': state.isPub }"
+      @click="stopPub"
+      :disabled="!state.isPub"
     >Stop</button>
 
     <h3>Stat</h3>

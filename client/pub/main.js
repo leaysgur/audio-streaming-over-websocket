@@ -27,7 +27,7 @@ var pubApp = {
     },
     state: {
       isMicOn: false,
-      isRec:   false
+      isPub:   false
     },
     subNum: 0
   },
@@ -57,20 +57,20 @@ var pubApp = {
       }, this);
 
       cancelAnimationFrame(this._drawInputSpectrum);
-      this.stopRec();
+      this.stopPub();
     },
 
-    startRec: function() {
+    startPub: function() {
       if (!this.state.isMicOn) { return; }
-      if (this.state.isRec) { return; }
+      if (this.state.isPub) { return; }
 
-      this.state.isRec = true;
+      this.state.isPub = true;
     },
 
-    stopRec: function() {
-      if (!this.state.isRec) { return; }
+    stopPub: function() {
+      if (!this.state.isPub) { return; }
 
-      this.state.isRec = false;
+      this.state.isPub = false;
     },
 
     _onMicStream: function(stream) {
@@ -117,7 +117,7 @@ var pubApp = {
 
       // Bypassしつつ飛ばす
       outputData.set(inputData);
-      if (this.state.isRec) {
+      if (this.state.isPub) {
         this.$data._socket.emit('audio', outputData.buffer);
       }
     },
