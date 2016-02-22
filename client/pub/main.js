@@ -42,19 +42,24 @@ var pubApp = {
     startRec: function() {
       if (!this.stream) { return; }
       if (this.audio.source && this.audio.processor) { return; }
-      this.audio.source    = this.ctx.createMediaStreamSource(this.stream);
-      this.audio.filter    = this.ctx.createBiquadFilter();
-      this.audio.analyser  = this.ctx.createAnalyser();
-      // モノラル
-      this.audio.processor = this.ctx.createScriptProcessor(BUFFER_SIZE, 1, 1);
-      this.audio.gain      = this.ctx.createGain();
 
-      window.filter = this.audio.filter;
+      // マイク
+      this.audio.source = this.ctx.createMediaStreamSource(this.stream);
+
       // ないよりマシなフィルター
+      this.audio.filter = this.ctx.createBiquadFilter();
       this.audio.filter.type = 'highshelf';
+
+      this.audio.analyser = this.ctx.createAnalyser();
       this.audio.analyser.smoothingTimeConstant = 0.4;
       this.audio.analyser.fftSize = BUFFER_SIZE;
+
+      // 音質には期待しないのでモノラルで飛ばす
+      this.audio.processor = this.ctx.createScriptProcessor(BUFFER_SIZE, 1, 1);
       this.audio.processor.onaudioprocess = this._onAudioProcess;
+
+      // 自分のフィードバックいらない
+      this.audio.gain = this.ctx.createGain();
       this.audio.gain.gain.value = 0;
 
       this.audio.source.connect(this.audio.filter);
