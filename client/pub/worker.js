@@ -1,5 +1,5 @@
 'use strict';
-importScripts('https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.5/socket.io.min.js');
+importScripts('../../node_modules/socket.io-client/socket.io.js');
 
 var socket = null;
 
