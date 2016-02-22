@@ -5,16 +5,13 @@ var io  = global.io;
 var Vue = global.Vue;
 var AudioContext = global.AudioContext;
 
-
-var initial_delay_sec = 0,
-    scheduled_time = 0;
-
 var subApp = {
   el: '#jsSubApp',
   data: {
     socket: null,
     ctx:    null,
     subNum: 0,
+    startTime: 0,
     state: {
       audioReady: false
     }
@@ -28,26 +25,27 @@ var subApp = {
     },
     _handleAudioBuffer: function(buf) {
       var audio_f32 = new Float32Array(buf);
-      var audio_buf = this.ctx.createBuffer(1, audio_f32.length, 44100);
-      audio_buf.getChannelData(0).set(audio_f32);
+      var audioBuffer = this.ctx.createBuffer(1, audio_f32.length, 44100);
+      audioBuffer.getChannelData(0).set(audio_f32);
 
-      var audio_src = this.ctx.createBufferSource();
-      audio_src.buffer = audio_buf;
-      audio_src.connect(this.ctx.destination);
+      var source = this.ctx.createBufferSource();
+      source.buffer = audioBuffer;
+      source.connect(this.ctx.destination);
 
-      var current_time = this.ctx.currentTime;
+      var currentTime = this.ctx.currentTime;
 
-      if (current_time < scheduled_time) {
-        audio_src.start(scheduled_time);
-        scheduled_time += audio_buf.duration;
+      if (currentTime < this.startTime) {
+        source.start(this.startTime);
+        this.startTime += audioBuffer.duration;
       } else {
-        audio_src.start(scheduled_time);
-        scheduled_time = current_time + audio_buf.duration + initial_delay_sec;
+        source.start(this.startTime);
+        this.startTime = currentTime + audioBuffer.duration;
       }
     },
     _hookCreated: function() {
       var $data = this.$data;
       this.ctx = new AudioContext();
+
       this.socket = io(global.SOCKET_SERVER);
       this.socket.emit('sub:connect');
       this.socket.on('subNum', function(num) {
