@@ -11,80 +11,100 @@ var AudioContext = global.AudioContext;
 var subApp = {
   el: '#jsSubApp',
   data: {
-    socket: null,
-    ctx:    null,
-    volume: 0,
-    subNum: 0,
-    startTime: 0,
-    audio: {
+    _socket: null,
+    _ctx:    null,
+    _startTime: 0,
+    _audio: {
       gain: null
     },
-    watch: {
+    _watch: {
       volume: null
-    }
-  },
-  methods: {
-    startSub: function() {
-      if (this.audio.gain) { return; }
-      this._readyAudio();
-      this.socket.on('audio', this._handleAudioBuffer);
     },
-    stopSub: function() {
-      this._resetAudio();
-      this.socket.off('audio', this._handleAudioBuffer);
+    state: {
+      isSub: false
     },
-    _handleAudioBuffer: function(buf) {
-      var f32Audio = new Float32Array(buf);
-      var audioBuffer = this.ctx.createBuffer(1, BUFFER_SIZE, 44100);
-      audioBuffer.getChannelData(0).set(f32Audio);
-
-      var source = this.ctx.createBufferSource();
-      source.buffer = audioBuffer;
-      source.connect(this.audio.gain);
-
-      var currentTime = this.ctx.currentTime;
-      if (currentTime < this.startTime) {
-        source.start(this.startTime);
-        this.startTime += audioBuffer.duration;
-      } else {
-        source.start(this.startTime);
-        this.startTime = currentTime + audioBuffer.duration;
-      }
-    },
-    _hookCreated: function() {
-      var $data = this.$data;
-      this.ctx = new AudioContext();
-
-      this.socket = io(SOCKET_SERVER);
-      this.socket.emit('sub:connect');
-      this.socket.on('subNum', function(num) {
-        $data.subNum = num;
-      });
-    },
-    _readyAudio: function() {
-      this.audio.gain = this.ctx.createGain();
-      this.audio.gain.gain.value = this.volume;
-      this.audio.gain.connect(this.ctx.destination);
-
-      this.watch.volume = this.$watch('volume', this._onChangeVolume);
-    },
-    _resetAudio: function() {
-      Object.keys(this.audio).forEach(function(key) {
-        this.audio[key] && this.audio[key].disconnect();
-        this.audio[key] = null;
-      }, this);
-
-      Object.keys(this.watch).forEach(function(key) {
-        this.watch[key]();
-        this.watch[key] = null;
-      }, this);
-    },
-    _onChangeVolume: function(val) {
-      this.audio.gain.gain.value = val;
-    }
+    volume: 0,
+    subNum: 0
   },
   events: {
     'hook:created':  function() { this._hookCreated(); }
+  },
+  methods: {
+    startSub: function() {
+      if (this.state.isSub) { return; }
+
+      this._readyAudio();
+      this.$data._socket.on('audio', this._handleAudioBuffer);
+      this.state.isSub = true;
+    },
+
+    stopSub: function() {
+      if (!this.state.isSub) { return; }
+
+      this._resetAudio();
+      this.$data._socket.off('audio', this._handleAudioBuffer);
+      this.state.isSub = false;
+    },
+
+    _handleAudioBuffer: function(buf) {
+      var ctx = this.$data._ctx;
+      var audio = this.$data._audio;
+      var f32Audio = new Float32Array(buf);
+      var audioBuffer = ctx.createBuffer(1, BUFFER_SIZE, ctx.sampleRate);
+      audioBuffer.getChannelData(0).set(f32Audio);
+
+      var source = ctx.createBufferSource();
+      source.buffer = audioBuffer;
+      source.connect(audio.gain);
+
+      var currentTime = ctx.currentTime;
+      if (currentTime < this._startTime) {
+        source.start(this._startTime);
+        this._startTime += audioBuffer.duration;
+      } else {
+        source.start(this._startTime);
+        this._startTime = currentTime + audioBuffer.duration;
+      }
+    },
+
+    _hookCreated: function() {
+      var $data = this.$data;
+      $data._ctx = new AudioContext();
+
+      $data._socket = io(SOCKET_SERVER);
+      $data._socket.emit('sub:connect');
+      $data._socket.on('subNum', function(num) {
+        $data.subNum = num;
+      });
+    },
+
+    _readyAudio: function() {
+      var ctx = this.$data._ctx;
+      var audio = this.$data._audio;
+      audio.gain = ctx.createGain();
+      audio.gain.gain.value = this.volume;
+      audio.gain.connect(ctx.destination);
+
+      this.$data._watch.volume = this.$watch('volume', this._onChangeVolume);
+    },
+
+    _resetAudio: function() {
+      var audio = this.$data._audio;
+      var watch = this.$data._watch;
+      Object.keys(audio).forEach(function(key) {
+        audio[key] && audio[key].disconnect();
+        audio[key] = null;
+      }, this);
+
+      Object.keys(watch).forEach(function(key) {
+        watch[key]();
+        watch[key] = null;
+      }, this);
+    },
+
+    _onChangeVolume: function(val) {
+      this.$data._audio.gain.gain.value = val;
+    }
   }
 };
 

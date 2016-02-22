@@ -14,8 +14,18 @@
 
     <h3>Subscribe</h3>
 
-    <button class="button" @click="startSub">Start</button>
-    <button class="button button-outline" @click="stopSub">Stop</button>
+    <button
+      class="button"
+      :class="{ 'button-outline': !state.isSub }"
+      :disabled="state.isSub"
+      @click="startSub"
+    >Start</button>
+    <button
+      class="button"
+      :class="{ 'button-outline': state.isSub }"
+      :disabled="!state.isSub"
+      @click="stopSub"
+    >Stop</button>
 
     <h3>Volume</h3>
     <input type="range" min="0" max="1" step="0.1" v-model="volume">

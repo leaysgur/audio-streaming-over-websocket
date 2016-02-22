@@ -46,8 +46,8 @@ var pubApp = {
     offMic:  function() {
       if (!this.state.isMicOn) { return; }
 
-      this._stream.getTracks().forEach(function(t) { t.stop(); });
-      this._stream = null;
+      this.$data._stream.getTracks().forEach(function(t) { t.stop(); });
+      this.$data._stream = null;
       this.state.isMicOn = false;
 
       var audio = this.$data._audio;
@@ -74,14 +74,14 @@ var pubApp = {
     },
 
     _onMicStream: function(stream) {
-      this._stream = stream;
+      this.$data._stream = stream;
       this.state.isMicOn = true;
 
-      var ctx = this._ctx;
+      var ctx = this.$data._ctx;
       var audio = this.$data._audio;
 
       // マイク
-      audio.source = ctx.createMediaStreamSource(this._stream);
+      audio.source = ctx.createMediaStreamSource(this.$data._stream);
 
       // ないよりマシなフィルター
       audio.filter = ctx.createBiquadFilter();
@@ -118,7 +118,7 @@ var pubApp = {
       // Bypassしつつ飛ばす
       outputData.set(inputData);
       if (this.state.isRec) {
-        this._socket.emit('audio', outputData.buffer);
+        this.$data._socket.emit('audio', outputData.buffer);
       }
     },
 
@@ -148,9 +148,9 @@ var pubApp = {
     _hookCreated: function() {
       var $data = this.$data;
 
-      this._ctx = new AudioContext();
-      this._socket = io(SOCKET_SERVER);
-      this._socket.on('subNum', function(num) {
+      $data._ctx = new AudioContext();
+      $data._socket = io(SOCKET_SERVER);
+      $data._socket.on('subNum', function(num) {
         $data.subNum = num;
       });
     },
