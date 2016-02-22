@@ -14,13 +14,33 @@
 
     <h3>Mic</h3>
 
-    <button class="button" @click="onMic">On</button>
-    <button class="button button-outline" @click="offMic">Off</button>
+    <button
+      class="button"
+      :class="{ 'button-outline': !state.isMicOn }"
+      @click="onMic"
+      :disabled="state.isMicOn"
+    >On</button>
+    <button
+      class="button"
+      :class="{ 'button-outline': state.isMicOn }"
+      @click="offMic"
+      :disabled="!state.isMicOn"
+    >Off</button>
 
     <h3>Record</h3>
 
-    <button class="button" @click="startRec">Start</button>
-    <button class="button button-outline" @click="stopRec">Stop</button>
+    <button
+      class="button"
+      :class="{ 'button-outline': !state.isRec }"
+      @click="startRec"
+      :disabled="state.isRec"
+    >Start</button>
+    <button
+      class="button"
+      :class="{ 'button-outline': state.isRec }"
+      @click="stopRec"
+      :disabled="!state.isRec"
+    >Stop</button>
 
     <h3>Stat</h3>
     <p>

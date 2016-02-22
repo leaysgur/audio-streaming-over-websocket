@@ -5,3 +5,7 @@
   padding: 0 2rem;
   position: relative;
 }
+
+.button[disabled] {
+  opacity: 1!important;
+}
