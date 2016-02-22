@@ -4,7 +4,6 @@
 var SOCKET_SERVER = global.SOCKET_SERVER;
 var BUFFER_SIZE   = global.BUFFER_SIZE;
 
-var io  = global.io;
 var Vue = global.Vue;
 var gUM = navigator.getUserMedia.bind(navigator);
 var AudioContext = global.AudioContext;
@@ -15,7 +14,7 @@ function _err(err) { console.error(err); }
 var pubApp = {
   el: '#jsPubApp',
   data: {
-    _socket: null,
+    _worker: null,
     _stream: null,
     _ctx:    null,
     _audio:  {
@@ -118,7 +117,10 @@ var pubApp = {
       // Bypassしつつ飛ばす
       outputData.set(inputData);
       if (this.state.isPub) {
-        this.$data._socket.emit('audio', outputData.buffer);
+        this.$data._worker.postMessage({
+          type: 'audio',
+          data: outputData.buffer
+        });
       }
     },
 
@@ -145,14 +147,28 @@ var pubApp = {
       requestAnimationFrame(this._drawInputSpectrum);
     },
 
+    _handleWorkerMsg: function(ev) {
+      var payload = ev.data;
+      switch (payload.type) {
+      case 'subNum':
+        this.$data.subNum = payload.data;
+        break;
+      }
+    },
+
     _hookCreated: function() {
       var $data = this.$data;
 
       $data._ctx = new AudioContext();
-      $data._socket = io(SOCKET_SERVER);
-      $data._socket.on('subNum', function(num) {
-        $data.subNum = num;
+
+      $data._worker = new Worker('./worker.js');
+      $data._worker.postMessage({
+        type: 'init',
+        data: {
+          SOCKET_SERVER: SOCKET_SERVER
+        }
       });
+      $data._worker.addEventListener('message', this._handleWorkerMsg);
     },
 
     _hookAttached: function() {
