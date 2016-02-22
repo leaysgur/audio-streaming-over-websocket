@@ -1,6 +1,6 @@
 'use strict';
 
-const PORT = 3000;
+const PORT = 9999;
 
 const http = require('http').Server();
 const io = require('socket.io')(http);
