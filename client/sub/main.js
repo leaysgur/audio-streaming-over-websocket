@@ -13,17 +13,24 @@ var subApp = {
   data: {
     socket: null,
     ctx:    null,
+    volume: 0,
     subNum: 0,
     startTime: 0,
-    state: {
-      audioReady: false
+    audio: {
+      gain: null
+    },
+    watch: {
+      volume: null
     }
   },
   methods: {
     startSub: function() {
+      if (this.audio.gain) { return; }
+      this._readyAudio();
       this.socket.on('audio', this._handleAudioBuffer);
     },
     stopSub: function() {
+      this._resetAudio();
       this.socket.off('audio', this._handleAudioBuffer);
     },
     _handleAudioBuffer: function(buf) {
@@ -33,7 +40,7 @@ var subApp = {
 
       var source = this.ctx.createBufferSource();
       source.buffer = audioBuffer;
-      source.connect(this.ctx.destination);
+      source.connect(this.audio.gain);
 
       var currentTime = this.ctx.currentTime;
       if (currentTime < this.startTime) {
@@ -54,26 +61,30 @@ var subApp = {
         $data.subNum = num;
       });
     },
-    _hookAttached: function() {
-      document.body.addEventListener('touchstart', this._readyAudio, false);
-    },
     _readyAudio: function() {
-      var that = this;
-      var osc = this.ctx.createOscillator();
-      osc.connect(this.ctx.destination);
-      osc.start(0);
-      setTimeout(function() {
-        osc.stop(0);
-        osc.disconnect();
-        osc = null;
-        that.state.audioReady = true;
-        document.body.removeEventListener('touchstart', that._readyAudio, false);
-      }, 400);
+      this.audio.gain = this.ctx.createGain();
+      this.audio.gain.gain.value = this.volume;
+      this.audio.gain.connect(this.ctx.destination);
+
+      this.watch.volume = this.$watch('volume', this._onChangeVolume);
+    },
+    _resetAudio: function() {
+      Object.keys(this.audio).forEach(function(key) {
+        this.audio[key] && this.audio[key].disconnect();
+        this.audio[key] = null;
+      }, this);
+
+      Object.keys(this.watch).forEach(function(key) {
+        this.watch[key]();
+        this.watch[key] = null;
+      }, this);
+    },
+    _onChangeVolume: function(val) {
+      this.audio.gain.gain.value = val;
     }
   },
   events: {
-    'hook:created':  function() { this._hookCreated(); },
-    'hook:attached': function() { this._hookAttached(); }
+    'hook:created':  function() { this._hookCreated(); }
   }
 };
 

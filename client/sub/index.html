@@ -17,10 +17,13 @@
     <button class="button" @click="startSub">Start</button>
     <button class="button button-outline" @click="stopSub">Stop</button>
 
+    <h3>Volume</h3>
+    <input type="range" min="0" max="1" step="0.1" v-model="volume">
+
     <h3>Stat</h3>
 
     <p>
-      Audio is {{state.audioReady ? '' : 'NOT '}}ready.
+      Volume: {{volume}}
     </p>
     <p>
       Subscribers: {{subNum}}
