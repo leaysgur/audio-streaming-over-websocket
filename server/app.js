@@ -1,6 +1,6 @@
 'use strict';
 
-const PORT = 9999;
+const PORT = process.env.port || 9999;
 
 const http = require('http').Server();
 const io = require('socket.io')(http);
@@ -12,7 +12,7 @@ let getSubNum = () => {
 
 io.on('connection', (socket) => {
   let socketId = socket.id;
-  console.log(`user connected -> id: ${socketId}`);
+  console.log(`user connected    -> id: ${socketId}`);
 
   notifySubNum();
 
