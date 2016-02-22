@@ -1,14 +1,12 @@
-(function(global) {
 'use strict';
+var io    = require('socket.io-client');
+var util  = require('../cmn/util');
+var Const = require('../cmn/const');
 
-var SOCKET_SERVER = global.SOCKET_SERVER;
-var BUFFER_SIZE   = global.BUFFER_SIZE;
+var SOCKET_SERVER = Const.SOCKET_SERVER;
+var BUFFER_SIZE   = Const.BUFFER_SIZE;
 
-var io  = global.io;
-var Vue = global.Vue;
-var AudioContext = global.AudioContext;
-
-var subApp = {
+module.exports = {
   el: '#jsSubApp',
   data: {
     _socket: null,
@@ -69,7 +67,7 @@ var subApp = {
 
     _hookCreated: function() {
       var $data = this.$data;
-      $data._ctx = new AudioContext();
+      $data._ctx = new window.AudioContext();
 
       $data._socket = io(SOCKET_SERVER);
       $data._socket.emit('sub:connect');
@@ -89,17 +87,8 @@ var subApp = {
     },
 
     _resetAudio: function() {
-      var audio = this.$data._audio;
-      var watch = this.$data._watch;
-      Object.keys(audio).forEach(function(key) {
-        audio[key] && audio[key].disconnect();
-        audio[key] = null;
-      }, this);
-
-      Object.keys(watch).forEach(function(key) {
-        watch[key]();
-        watch[key] = null;
-      }, this);
+      util.disconnectAll(this.$data._audio);
+      util.unwatchAll(this.$data._watch);
     },
 
     _onChangeVolume: function(val) {
@@ -108,6 +97,3 @@ var subApp = {
   }
 };
 
-new Vue(subApp);
-
-}(this));

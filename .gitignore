@@ -1,3 +1,9 @@
+# App
+client/pub/app.css
+client/pub/app.js
+client/sub/app.css
+client/sub/app.js
+
 # Logs
 logs
 *.log

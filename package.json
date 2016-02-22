@@ -1,24 +1,36 @@
 {
-  "name": "8jj",
+  "name": "audio-streaming-over-websocket",
   "version": "1.0.0",
   "description": "8JoJimaで開発合宿したやつ",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postinstall": "mkdir -p dist",
+    "dev-js:pub": "watchify client/_src/pub/main.js -v -o client/pub/app.js",
+    "dev-js:sub": "watchify client/_src/sub/main.js -v -o client/sub/app.js",
+    "dev-js": "parallelshell \"npm run dev-js:pub\" \"npm run dev-js:sub\"",
+    "build-js:pub": "browserify client/_src/pub/main.js -o client/pub/app.js",
+    "build-js:sub": "browserify client/_src/sub/main.js -o client/sub/app.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/leader22/8jj.git"
+    "url": "git+https://github.com/leader22/audio-streaming-over-websocket.git"
   },
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/leader22/8jj/issues"
+    "url": "https://github.com/leader22/audio-streaming-over-websocket/issues"
   },
-  "homepage": "https://github.com/leader22/8jj#readme",
+  "homepage": "https://github.com/leader22/audio-streaming-over-websocket#readme",
   "dependencies": {
     "milligram": "^1.1.0",
     "socket.io": "^1.4.5",
-    "vue": "^1.0.16"
+    "socket.io-client": "^1.4.5",
+    "vue": "^1.0.16",
+    "webworkify": "^1.1.0"
+  },
+  "devDependencies": {
+    "parallelshell": "^2.0.0",
+    "watchify": "^3.7.0"
   }
 }

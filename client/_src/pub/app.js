@@ -1,17 +1,12 @@
-(function(global) {
 'use strict';
+var util  = require('../cmn/util');
+var Const = require('../cmn/const');
+var work = require('webworkify');
 
-var SOCKET_SERVER = global.SOCKET_SERVER;
-var BUFFER_SIZE   = global.BUFFER_SIZE;
+var SOCKET_SERVER = Const.SOCKET_SERVER;
+var BUFFER_SIZE   = Const.BUFFER_SIZE;
 
-var Vue = global.Vue;
-var gUM = navigator.getUserMedia.bind(navigator);
-var AudioContext = global.AudioContext;
-
-function _err(err) { console.error(err); }
-
-
-var pubApp = {
+module.exports = {
   el: '#jsPubApp',
   data: {
     _worker: null,
@@ -39,7 +34,13 @@ var pubApp = {
       var that = this;
       if (that.state.isMicOn) { return; }
 
-      gUM({ audio: true }, this._onMicStream, _err);
+      navigator.getUserMedia(
+        { audio: true },
+        this._onMicStream,
+        function(err) {
+          console.error(err);
+        }
+      );
     },
 
     offMic:  function() {
@@ -49,11 +50,7 @@ var pubApp = {
       this.$data._stream = null;
       this.state.isMicOn = false;
 
-      var audio = this.$data._audio;
-      Object.keys(audio).forEach(function(key) {
-        audio[key] && audio[key].disconnect();
-        audio[key] = null;
-      }, this);
+      util.disconnectAll(this.$data._audio);
 
       cancelAnimationFrame(this._drawInputSpectrum);
       this.stopPub();
@@ -159,9 +156,9 @@ var pubApp = {
     _hookCreated: function() {
       var $data = this.$data;
 
-      $data._ctx = new AudioContext();
+      $data._ctx = new window.AudioContext();
 
-      $data._worker = new Worker('./worker.js');
+      $data._worker = work(require('./worker.js'));
       $data._worker.postMessage({
         type: 'init',
         data: {
@@ -180,7 +177,3 @@ var pubApp = {
     }
   }
 };
-
-new Vue(pubApp);
-
-}(this));
