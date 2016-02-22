@@ -1,6 +1,9 @@
 (function(global) {
 'use strict';
 
+var SOCKET_SERVER = global.SOCKET_SERVER;
+var BUFFER_SIZE   = global.BUFFER_SIZE;
+
 var io  = global.io;
 var Vue = global.Vue;
 var gUM = navigator.getUserMedia.bind(navigator);
@@ -18,6 +21,7 @@ var pubApp = {
     audio:  {
       source:    null,
       processor: null,
+      filter:    null,
       analyser:  null,
       gain:      null
     },
@@ -39,18 +43,23 @@ var pubApp = {
       if (!this.stream) { return; }
       if (this.audio.source && this.audio.processor) { return; }
       this.audio.source    = this.ctx.createMediaStreamSource(this.stream);
+      this.audio.filter    = this.ctx.createBiquadFilter();
       this.audio.analyser  = this.ctx.createAnalyser();
       // モノラル
-      this.audio.processor = this.ctx.createScriptProcessor(1024, 1, 1);
+      this.audio.processor = this.ctx.createScriptProcessor(BUFFER_SIZE, 1, 1);
       this.audio.gain      = this.ctx.createGain();
 
+      window.filter = this.audio.filter;
+      // ないよりマシなフィルター
+      this.audio.filter.type = 'highshelf';
       this.audio.analyser.smoothingTimeConstant = 0.4;
-      this.audio.analyser.fftSize = 1024;
+      this.audio.analyser.fftSize = BUFFER_SIZE;
       this.audio.processor.onaudioprocess = this._onAudioProcess;
       this.audio.gain.gain.value = 0;
 
-      this.audio.source.connect(this.audio.processor);
-      this.audio.source.connect(this.audio.analyser);
+      this.audio.source.connect(this.audio.filter);
+      this.audio.filter.connect(this.audio.processor);
+      this.audio.filter.connect(this.audio.analyser);
       this.audio.processor.connect(this.audio.gain);
       this.audio.gain.connect(this.ctx.destination);
 
@@ -58,18 +67,15 @@ var pubApp = {
     },
     stopRec: function() {
       cancelAnimationFrame(this._drawInputSpectrum);
-      this.audio.processor && this.audio.processor.disconnect();
-      this.audio.source    && this.audio.source.disconnect();
-      this.audio.analyser  && this.audio.analyser.disconnect();
-      this.audio.gain      && this.audio.gain.disconnect();
-      this.audio.processor = null;
-      this.audio.source    = null;
-      this.audio.analyser  = null;
-      this.audio.gain      = null;
+
+      Object.keys(this.audio).forEach(function(key) {
+        this.audio[key] && this.audio[key].disconnect();
+        this.audio[key] = null;
+      }, this);
     },
     _onAudioProcess: function(ev) {
       var socket = this.socket;
-      var buffer = new Float32Array(1024);
+      var buffer = new Float32Array(BUFFER_SIZE);
       var inputBuffer  = ev.inputBuffer;
       var outputBuffer = ev.outputBuffer;
       var inputData  = inputBuffer.getChannelData(0);
@@ -102,7 +108,7 @@ var pubApp = {
     _hookCreated: function() {
       var $data = this.$data;
       this.ctx = new AudioContext();
-      this.socket = io(global.SOCKET_SERVER);
+      this.socket = io(SOCKET_SERVER);
       this.socket.on('subNum', function(num) {
         $data.subNum = num;
       });

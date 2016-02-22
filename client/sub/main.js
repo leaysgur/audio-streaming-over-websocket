@@ -1,6 +1,9 @@
 (function(global) {
 'use strict';
 
+var SOCKET_SERVER = global.SOCKET_SERVER;
+var BUFFER_SIZE   = global.BUFFER_SIZE;
+
 var io  = global.io;
 var Vue = global.Vue;
 var AudioContext = global.AudioContext;
@@ -25,7 +28,7 @@ var subApp = {
     },
     _handleAudioBuffer: function(buf) {
       var f32Audio = new Float32Array(buf);
-      var audioBuffer = this.ctx.createBuffer(1, f32Audio.length, 44100);
+      var audioBuffer = this.ctx.createBuffer(1, BUFFER_SIZE, 44100);
       audioBuffer.getChannelData(0).set(f32Audio);
 
       var source = this.ctx.createBufferSource();
@@ -45,7 +48,7 @@ var subApp = {
       var $data = this.$data;
       this.ctx = new AudioContext();
 
-      this.socket = io(global.SOCKET_SERVER);
+      this.socket = io(SOCKET_SERVER);
       this.socket.emit('sub:connect');
       this.socket.on('subNum', function(num) {
         $data.subNum = num;
