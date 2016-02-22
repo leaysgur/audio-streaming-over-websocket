@@ -4,5 +4,5 @@ window.requestAnimationFrame = window.requestAnimationFrame || window.webkitRequ
 window.cancelAnimationFrame = window.cancelAnimationFrame || window.webkitCancelAnimationFrame || window.mozCancelAnimationFrame;
 
 // window.SOCKET_SERVER = 'http://192.168.10.24:3000';
-window.SOCKET_SERVER = 'http://dev.lealog.net:9999/sock/';
+window.SOCKET_SERVER = 'http://dev.lealog.net:9999/';
 window.BUFFER_SIZE = 1024;
