@@ -1,0 +1,11 @@
+{
+  "use": [
+      "postcss-import",
+      "autoprefixer",
+      "cssnano"
+    ],
+  "input": "./client/_src/style/app.css",
+  "autoprefixer": {
+      "browsers": "last 2 versions"
+    }
+}

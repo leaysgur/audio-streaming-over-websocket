@@ -2,21 +2,27 @@
   "name": "audio-streaming-over-websocket",
   "version": "1.0.0",
   "description": "8JoJimaで開発合宿したやつ",
-  "main": "index.js",
+  "main": "server/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "postinstall": "mkdir -p dist",
-    "dev-js:pub": "watchify client/_src/pub/main.js -v -o client/pub/app.js",
-    "dev-js:sub": "watchify client/_src/sub/main.js -v -o client/sub/app.js",
+    "dev-js:pub": "watchify ./client/_src/pub/main.js -v -o ./client/pub/app.js",
+    "dev-js:sub": "watchify ./client/_src/sub/main.js -v -o ./client/sub/app.js",
     "dev-js": "parallelshell \"npm run dev-js:pub\" \"npm run dev-js:sub\"",
-    "build-js:pub": "browserify client/_src/pub/main.js -o client/pub/app.js",
-    "build-js:sub": "browserify client/_src/sub/main.js -o client/sub/app.js"
+    "build-js:pub": "browserify ./client/_src/pub/main.js -o ./client/pub/app.js",
+    "build-js:sub": "browserify ./client/_src/sub/main.js -o ./client/sub/app.js",
+    "build-js": "parallelshell \"npm run build-js:pub\" \"npm run build-js:sub\"",
+    "dev-css:pub": "postcss -c ./.postcssrc.json -o ./client/pub/app.css -w",
+    "dev-css:sub": "postcss -c ./.postcssrc.json -o ./client/sub/app.css -w",
+    "dev-css": "parallelshell \"npm run dev-css:pub\" \"npm run dev-css:sub\"",
+    "build-css:pub": "postcss -c ./.postcssrc.json -o ./client/pub/app.css",
+    "build-css:sub": "postcss -c ./.postcssrc.json -o ./client/sub/app.css",
+    "build-css": "parallelshell \"npm run build-css:pub\" \"npm run build-css:sub\"",
+    "dev": "parallelshell \"npm run dev-js\" \"npm run dev-css\""
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/leader22/audio-streaming-over-websocket.git"
   },
-  "author": "",
+  "author": "leader22",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/leader22/audio-streaming-over-websocket/issues"
@@ -30,7 +36,11 @@
     "webworkify": "^1.1.0"
   },
   "devDependencies": {
+    "auto-prefixer": "^0.4.2",
+    "cssnano": "^3.5.2",
     "parallelshell": "^2.0.0",
+    "postcss-cli": "^2.5.1",
+    "postcss-import": "^8.0.2",
     "watchify": "^3.7.0"
   }
 }
