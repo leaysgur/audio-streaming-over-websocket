@@ -10,6 +10,11 @@
 
   <section id="jsSubApp" class="container">
     <h2>SubApp</h2>
+    <p>
+      You are the Subscriber.
+      <br>
+      Just push START to subscribe your publisher's audio stream!
+    </p>
 
     <h3>Subscribe</h3>
 
@@ -28,14 +33,20 @@
 
     <h3>Volume</h3>
     <input type="range" min="0" max="1" step="0.1" v-model="volume">
+    <button
+      class="button"
+      :class="{ 'button-outline': volume !== 0 }"
+      :disabled="volume === 0"
+      @click="volume = 0"
+    >Mute</button>
 
     <h3>Stat</h3>
 
     <p>
-      Volume: {{volume}}
+      Subscribers: {{subNum}}
     </p>
     <p>
-      Subscribers: {{subNum}}
+      Volume: {{volume}}
     </p>
 
   </section>

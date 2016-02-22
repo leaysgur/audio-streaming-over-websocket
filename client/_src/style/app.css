@@ -12,6 +12,13 @@
   position: relative;
 }
 
+.button.button-outline {
+  opacity: .5;
+}
+.button.button-outline:hover {
+  opacity: 1;
+}
+
 .button[disabled] {
   opacity: 1!important;
 }

@@ -10,6 +10,11 @@
 
   <section id="jsPubApp" class="container">
     <h2>PubApp</h2>
+    <p>
+      You are the publisher.
+      <br>
+      Turn your mic ON, then push START to publish your audio stream!
+    </p>
 
     <h3>Mic</h3>
 
@@ -45,7 +50,8 @@
     <p>
       Subscribers: {{subNum}}
     </p>
-    <canvas v-el:canvas width="320" height="180"></canvas>
+    <p v-show="!state.isMicOn">Audio spectrum will be shown below.</p>
+    <canvas v-show="state.isMicOn" v-el:canvas></canvas>
 
   </section>
 

@@ -2,9 +2,10 @@
   "name": "audio-streaming-over-websocket",
   "version": "1.0.0",
   "description": "Audio streaming over WebSocket",
-  "main": "server/index.js",
+  "private": true,
   "scripts": {
     "postinstall": "npm run build",
+    "start": "node server/index.js",
     "dev-js:pub": "watchify ./client/_src/script/pub/main.js -v -o ./client/pub/app.js",
     "dev-js:sub": "watchify ./client/_src/script/sub/main.js -v -o ./client/sub/app.js",
     "dev-js": "parallelshell \"npm run dev-js:pub\" \"npm run dev-js:sub\"",
