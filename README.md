@@ -22,8 +22,9 @@
 - と思ったけど1つ(詳細で2つ)しかなさそう
   - MediaRecorderでwebmにしてそれを送る
    - https://github.com/mganeko/wmls/blob/master/views/golive.ejs
-  - audioOnProcessでバッファを送る
+   - audioOnProcessでバッファを送る
    - AudioBufferをそのまま？もしくは中のデータをint16にしてそれぞれ？
+
 ## 試す
 - AudioBufferをsocket.emitする方法がわからん
 - WebSocket(socket.io)を適当に立てておさらい
@@ -31,3 +32,9 @@
 - バイナリメッセージングとは
 - ローカルの音を拾ってサーバーに投げる
 - もらった音を鳴らす
+
+## TODO
+- UIもうちょい親切に
+- モノラルにするかステレオにするか
+- ノイズ低減
+- 脱localhost
