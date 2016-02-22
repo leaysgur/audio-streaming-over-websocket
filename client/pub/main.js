@@ -40,10 +40,7 @@ var pubApp = {
       var that = this;
       if (that.state.isMicOn) { return; }
 
-      gUM({ audio: true }, function(stream) {
-        that._stream = stream;
-        that.state.isMicOn = true;
-      }, _err);
+      gUM({ audio: true }, this._onMicStream, _err);
     },
 
     offMic:  function() {
@@ -52,12 +49,33 @@ var pubApp = {
       this._stream.getTracks().forEach(function(t) { t.stop(); });
       this._stream = null;
       this.state.isMicOn = false;
+
+      var audio = this.$data._audio;
+      Object.keys(audio).forEach(function(key) {
+        audio[key] && audio[key].disconnect();
+        audio[key] = null;
+      }, this);
+
+      cancelAnimationFrame(this._drawInputSpectrum);
       this.stopRec();
     },
 
     startRec: function() {
       if (!this.state.isMicOn) { return; }
       if (this.state.isRec) { return; }
+
+      this.state.isRec = true;
+    },
+
+    stopRec: function() {
+      if (!this.state.isRec) { return; }
+
+      this.state.isRec = false;
+    },
+
+    _onMicStream: function(stream) {
+      this._stream = stream;
+      this.state.isMicOn = true;
 
       var ctx = this._ctx;
       var audio = this.$data._audio;
@@ -69,6 +87,7 @@ var pubApp = {
       audio.filter = ctx.createBiquadFilter();
       audio.filter.type = 'highshelf';
 
+      // マイクレベル確認用
       audio.analyser = ctx.createAnalyser();
       audio.analyser.smoothingTimeConstant = 0.4;
       audio.analyser.fftSize = BUFFER_SIZE;
@@ -82,26 +101,12 @@ var pubApp = {
       audio.gain.gain.value = 0;
 
       audio.source.connect(audio.filter);
-      audio.filter.connect(audio.processor);
       audio.filter.connect(audio.analyser);
+      audio.source.connect(audio.processor);
       audio.processor.connect(audio.gain);
       audio.gain.connect(ctx.destination);
 
       this._drawInputSpectrum();
-      this.state.isRec = true;
-    },
-
-    stopRec: function() {
-      if (!this.state.isRec) { return; }
-
-      cancelAnimationFrame(this._drawInputSpectrum);
-
-      var audio = this._audio;
-      Object.keys(audio).forEach(function(key) {
-        audio[key] && audio[key].disconnect();
-        audio[key] = null;
-      }, this);
-      this.state.isRec = false;
     },
 
     _onAudioProcess: function(ev) {
@@ -112,7 +117,9 @@ var pubApp = {
 
       // Bypassしつつ飛ばす
       outputData.set(inputData);
-      this._socket.emit('audio', outputData.buffer);
+      if (this.state.isRec) {
+        this._socket.emit('audio', outputData.buffer);
+      }
     },
 
     _drawInputSpectrum: function() {
