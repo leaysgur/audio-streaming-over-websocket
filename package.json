@@ -4,7 +4,6 @@
   "description": "Audio streaming over WebSocket",
   "private": true,
   "scripts": {
-    "postinstall": "npm run build",
     "start": "node server/index.js",
     "dev-js:pub": "watchify ./client/_src/script/pub/main.js -v -o ./client/pub/app.js",
     "dev-js:sub": "watchify ./client/_src/script/sub/main.js -v -o ./client/sub/app.js",
@@ -39,7 +38,8 @@
     "webworkify": "^1.1.0"
   },
   "devDependencies": {
-    "auto-prefixer": "^0.4.2",
+    "autoprefixer": "^6.3.3",
+    "browserify": "^13.0.0",
     "cssnano": "^3.5.2",
     "parallelshell": "^2.0.0",
     "postcss-cli": "^2.5.1",
