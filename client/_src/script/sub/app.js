@@ -1,7 +1,7 @@
 'use strict';
-var io    = require('socket.io-client');
 var util  = require('../cmn/util');
 var Const = require('../cmn/const');
+var work = require('webworkify');
 
 var SOCKET_SERVER = Const.SOCKET_SERVER;
 var BUFFER_SIZE   = Const.BUFFER_SIZE;
@@ -9,8 +9,8 @@ var BUFFER_SIZE   = Const.BUFFER_SIZE;
 module.exports = {
   el: '#jsSubApp',
   data: {
-    _socket: null,
     _ctx:    null,
+    _worker: null,
     _startTime: 0,
     _audio: {
       gain: null
@@ -35,18 +35,22 @@ module.exports = {
     startSub: function() {
       if (this.state.isSub) { return; }
 
-      this.$data._socket.emit('sub:join', this.chName);
+      this.$data._worker.postMessage({
+        type: 'SUB_JOIN',
+        data: this.chName
+      });
       this._readyAudio();
-      this.$data._socket.on('audio', this._handleAudioBuffer);
       this.state.isSub = true;
     },
 
     stopSub: function() {
       if (!this.state.isSub) { return; }
 
-      this.$data._socket.emit('sub:leave', this.chName);
+      this.$data._worker.postMessage({
+        type: 'SUB_LEAVE',
+        data: this.chName
+      });
       this._resetAudio();
-      this.$data._socket.off('audio', this._handleAudioBuffer);
       this.state.isSub = false;
     },
 
@@ -75,14 +79,30 @@ module.exports = {
       var $data = this.$data;
       $data._ctx = new window.AudioContext();
 
-      $data._socket = io(SOCKET_SERVER);
-      $data._socket.on('ch', function(ch) {
-        $data.ch = ch;
+      $data._worker = work(require('./worker.js'));
+      $data._worker.addEventListener('message', this._handleWorkerMsg);
+      $data._worker.postMessage({
+        type: 'INIT',
+        data: {
+          SOCKET_SERVER: SOCKET_SERVER
+        }
       });
-      $data._socket.on('delCh', function() {
+    },
+
+    _handleWorkerMsg: function(ev) {
+      var $data = this.$data;
+      var payload = ev.data;
+      switch (payload.type) {
+      case 'ch':
+        $data.ch = payload.data;
+        break;
+      case 'audio':
+        this._handleAudioBuffer(payload.data);
+        break;
+      case 'delCh':
         location.reload();
-      });
-      $data._socket.emit('sub:connect');
+        break;
+      }
     },
 
     _readyAudio: function() {
