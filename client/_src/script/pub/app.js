@@ -64,11 +64,9 @@ module.exports = {
       if (this.noFilter) {
         audio.source.disconnect();
         audio.source.connect(audio.processor);
-        audio.source.connect(audio.analyser);
       } else {
         audio.source.disconnect();
         audio.source.connect(audio.filter);
-        audio.source.connect(audio.analyser);
       }
     },
 
@@ -121,8 +119,8 @@ module.exports = {
       audio.gain.gain.value = 0;
 
       audio.source.connect(audio.filter);
-      audio.source.connect(audio.analyser);
       audio.filter.connect(audio.processor);
+      audio.processor.connect(audio.analyser);
       audio.processor.connect(audio.gain);
       audio.gain.connect(ctx.destination);
 
