@@ -83,9 +83,13 @@ module.exports = {
       // マイク
       audio.source = ctx.createMediaStreamSource(this.$data._stream);
 
-      // ないよりマシなフィルター
+      // 電話くらいの品質にしておく
       audio.filter = ctx.createBiquadFilter();
-      audio.filter.type = 'highshelf';
+      audio.filter.type = 'bandpass';
+      // アナログ電話は300Hz ~ 3.4kHz / ひかり電話は100Hz ~ 7kHz
+      audio.filter.frequency.value = (100 + 7000) / 2;
+      // 固定ならだいたい聴き良いのがこれくらい・・？
+      audio.filter.Q.value = 0.25;
 
       // マイクレベル確認用
       audio.analyser = ctx.createAnalyser();
@@ -101,7 +105,7 @@ module.exports = {
       audio.gain.gain.value = 0;
 
       audio.source.connect(audio.filter);
-      audio.filter.connect(audio.analyser);
+      audio.source.connect(audio.analyser);
       audio.filter.connect(audio.processor);
       audio.processor.connect(audio.gain);
       audio.gain.connect(ctx.destination);
