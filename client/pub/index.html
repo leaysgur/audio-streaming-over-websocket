@@ -53,6 +53,15 @@
       :disabled="!state.isPub"
     >Stop</button>
 
+    <label>
+      <input
+        type="checkbox"
+        v-model="noFilter"
+        :disabled="!state.isPub"
+        @change="toggleFilter"
+      >use filter
+    </label>
+
     <h3>Audio In</h3>
     <p v-show="!state.isMicOn">Audio spectrum will be shown below.</p>
     <canvas v-show="state.isMicOn" v-el:canvas></canvas>

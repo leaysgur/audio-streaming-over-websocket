@@ -23,7 +23,8 @@ module.exports = {
       isMicOn: false,
       isPub:   false
     },
-    chName: ''
+    noFilter: true,
+    chName:   ''
   },
   events: {
     'hook:created':  function() { this._hookCreated(); },
@@ -54,6 +55,21 @@ module.exports = {
 
       cancelAnimationFrame(this._drawInputSpectrum);
       this.stopPub();
+    },
+
+    toggleFilter: function() {
+      if (!this.state.isPub) { return; }
+
+      var audio = this.$data._audio;
+      if (this.noFilter) {
+        audio.source.disconnect();
+        audio.source.connect(audio.processor);
+        audio.source.connect(audio.analyser);
+      } else {
+        audio.source.disconnect();
+        audio.source.connect(audio.filter);
+        audio.source.connect(audio.analyser);
+      }
     },
 
     startPub: function() {
