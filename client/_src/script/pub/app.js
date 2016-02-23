@@ -102,7 +102,7 @@ module.exports = {
 
       audio.source.connect(audio.filter);
       audio.filter.connect(audio.analyser);
-      audio.source.connect(audio.processor);
+      audio.filter.connect(audio.processor);
       audio.processor.connect(audio.gain);
       audio.gain.connect(ctx.destination);
 
