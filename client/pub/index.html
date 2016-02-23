@@ -13,7 +13,7 @@
     <p>
       You are the publisher.
       <br>
-      Turn your mic ON, then push START to publish your audio stream!
+      To punlish your audio stream, turn your mic ON, set #ch name and push START!
     </p>
 
     <h3>Mic</h3>
@@ -53,7 +53,7 @@
       :disabled="!state.isPub"
     >Stop</button>
 
-    <h3>Stat</h3>
+    <h3>Audio In</h3>
     <p v-show="!state.isMicOn">Audio spectrum will be shown below.</p>
     <canvas v-show="state.isMicOn" v-el:canvas></canvas>
 
