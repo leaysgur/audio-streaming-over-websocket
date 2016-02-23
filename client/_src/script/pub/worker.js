@@ -7,23 +7,15 @@ module.exports = function(self) {
   self.addEventListener('message', function(ev) {
     var payload = ev.data;
     switch (payload.type) {
-    case 'init':
-      _init(payload.data);
+    case 'INIT':
+      socket = io(payload.data.SOCKET_SERVER);
       break;
-    case 'audio':
+    case 'CH':
+      socket.emit('pub:ch', payload.data);
+      break;
+    case 'AUDIO':
       socket.emit('audio', payload.data);
       break;
     }
   });
-
-  function _init(data) {
-    socket = io(data.SOCKET_SERVER);
-    socket.on('subNum', function(num) {
-      self.postMessage({
-        type: 'subNum',
-        data: num
-      });
-    });
-  }
-
 };

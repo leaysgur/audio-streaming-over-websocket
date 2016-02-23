@@ -18,10 +18,26 @@
 
     <h3>Subscribe</h3>
 
+    <div class="row">
+      <label>
+        <p class="column" v-show="!hasCh">No publishers.</p>
+      </label>
+      <label class="column" v-for="_ch in ch">
+        <input
+          type="radio"
+          name="ch"
+          v-model="chName"
+          :disabled="state.isSub"
+          value="{{$key}}"
+        >
+        {{$key}}
+      </label>
+    </div>
+
     <button
       class="button"
       :class="{ 'button-outline': !state.isSub }"
-      :disabled="state.isSub"
+      :disabled="state.isSub || !chName"
       @click="startSub"
     >Start</button>
     <button
@@ -42,9 +58,6 @@
 
     <h3>Stat</h3>
 
-    <p>
-      Subscribers: {{subNum}}
-    </p>
     <p>
       Volume: {{volume}}
     </p>

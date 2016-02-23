@@ -21,8 +21,12 @@ module.exports = {
     state: {
       isSub: false
     },
-    volume: 0,
-    subNum: 0
+    ch:     {},
+    chName: '',
+    volume: 0
+  },
+  computed: {
+    hasCh: function() { return Object.keys(this.ch).length !== 0; }
   },
   events: {
     'hook:created':  function() { this._hookCreated(); }
@@ -31,6 +35,7 @@ module.exports = {
     startSub: function() {
       if (this.state.isSub) { return; }
 
+      this.$data._socket.emit('sub:join', this.chName);
       this._readyAudio();
       this.$data._socket.on('audio', this._handleAudioBuffer);
       this.state.isSub = true;
@@ -39,6 +44,7 @@ module.exports = {
     stopSub: function() {
       if (!this.state.isSub) { return; }
 
+      this.$data._socket.emit('sub:leave', this.chName);
       this._resetAudio();
       this.$data._socket.off('audio', this._handleAudioBuffer);
       this.state.isSub = false;
@@ -70,10 +76,13 @@ module.exports = {
       $data._ctx = new window.AudioContext();
 
       $data._socket = io(SOCKET_SERVER);
-      $data._socket.emit('sub:connect');
-      $data._socket.on('subNum', function(num) {
-        $data.subNum = num;
+      $data._socket.on('ch', function(ch) {
+        $data.ch = ch;
       });
+      $data._socket.on('delCh', function() {
+        location.reload();
+      });
+      $data._socket.emit('sub:connect');
     },
 
     _readyAudio: function() {

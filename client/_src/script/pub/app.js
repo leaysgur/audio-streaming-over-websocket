@@ -23,7 +23,7 @@ module.exports = {
       isMicOn: false,
       isPub:   false
     },
-    subNum: 0
+    chName: ''
   },
   events: {
     'hook:created':  function() { this._hookCreated(); },
@@ -61,6 +61,10 @@ module.exports = {
       if (this.state.isPub) { return; }
 
       this.state.isPub = true;
+      this.$data._worker.postMessage({
+        type: 'CH',
+        data: this.chName
+      });
     },
 
     stopPub: function() {
@@ -115,8 +119,8 @@ module.exports = {
       outputData.set(inputData);
       if (this.state.isPub) {
         this.$data._worker.postMessage({
-          type: 'audio',
-          data: outputData.buffer
+          type: 'AUDIO',
+          data: { buf: outputData.buffer, ch: this.chName }
         });
       }
     },
@@ -144,15 +148,6 @@ module.exports = {
       requestAnimationFrame(this._drawInputSpectrum);
     },
 
-    _handleWorkerMsg: function(ev) {
-      var payload = ev.data;
-      switch (payload.type) {
-      case 'subNum':
-        this.$data.subNum = payload.data;
-        break;
-      }
-    },
-
     _hookCreated: function() {
       var $data = this.$data;
 
@@ -160,12 +155,11 @@ module.exports = {
 
       $data._worker = work(require('./worker.js'));
       $data._worker.postMessage({
-        type: 'init',
+        type: 'INIT',
         data: {
           SOCKET_SERVER: SOCKET_SERVER
         }
       });
-      $data._worker.addEventListener('message', this._handleWorkerMsg);
     },
 
     _hookAttached: function() {

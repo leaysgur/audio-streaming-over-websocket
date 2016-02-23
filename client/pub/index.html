@@ -33,11 +33,18 @@
 
     <h3>Publish</h3>
 
+    <input
+      type="text"
+      v-model="chName"
+      placeholder="Set #ch name."
+      :disabled="state.isPub"
+    >
+
     <button
       class="button"
       :class="{ 'button-outline': !state.isPub }"
       @click="startPub"
-      :disabled="state.isPub"
+      :disabled="state.isPub || chName.length === 0"
     >Start</button>
     <button
       class="button"
@@ -47,9 +54,6 @@
     >Stop</button>
 
     <h3>Stat</h3>
-    <p>
-      Subscribers: {{subNum}}
-    </p>
     <p v-show="!state.isMicOn">Audio spectrum will be shown below.</p>
     <canvas v-show="state.isMicOn" v-el:canvas></canvas>
 
