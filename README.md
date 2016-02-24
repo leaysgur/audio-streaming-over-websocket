@@ -1,6 +1,16 @@
 # audio-streaming-over-websocket
 2016春の開発合宿 in 八丈島での成果物。
 
+## 作ってみての学び
+http://leader22.github.io/slides/asows/
+
+## Memo
+- Socket.IO用のサーバーは実装してある
+- ただ`/client/pub/`や`/client/sub/`にアクセスしたときにページを返すサーバーは実装してない
+
+
+- - -
+
 ## やりたかったこと
 - iOSのモバイル端末Aで、別のPC端末Bで鳴ってる音を流したい
 - イカデンワとかSkypeとか、PCで鳴ってる音をそのまま聴く専のクライアントが欲しい
@@ -25,12 +35,3 @@
    - https://github.com/mganeko/wmls/blob/master/views/golive.ejs
    - audioOnProcessでバッファを送る
    - AudioBufferをそのまま？もしくは中のデータをint16にしてそれぞれ？
-
-## Memo
-- Socket.IO用のサーバーは実装してある
-- ただ`/client/pub/`や`/client/sub/`にアクセスしたときにページを返すサーバーは実装してない
-  - Node.jsでやる理由がないから
-
-## TODO
-- UIのブラッシュアップ
-- 発表スライドと記事
