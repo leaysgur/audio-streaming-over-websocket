@@ -1,15 +1,30 @@
 # audio-streaming-over-websocket
-2016春の開発合宿 in 八丈島での成果物。
+株式会社ピクセルグリッド 2016春の開発合宿 in 八丈島での成果物。
 
 ![動作イメージ](./demo-img.jpg)
 
 ## 作ってみての学び
 http://leader22.github.io/slides/asows/
 
-## Memo
-- Socket.IO用のサーバーは実装してある
-- ただ`/client/pub/`や`/client/sub/`にアクセスしたときにページを返すサーバーは実装してない
+## 試すなら
+### サーバー
+- git clone
+- npm start
 
+wsが通るようにする(デフォルトは9999ポート)
+
+### クライアント
+- git clone
+- [コレ](https://github.com/leader22/audio-streaming-over-websocket/blob/master/client/_src/script/cmn/const.js#L2)を、↑のサーバーのアドレスに書き換え
+- npm run build
+- ローカルにサーバー立てて、`/client/pub/`や`/client/sub/`にアクセス
+
+Pub: localhost ⇔ サーバー ⇔ Sub: localhost が一番簡単
+
+### Memo
+- `/client/pub/`や`/client/sub/`にアクセスしたときにページを返すサーバーは実装してない
+- HTTPSかlocalhostでないと、Pubできないので注意
+- Subもサーバーに置くならビルドして
 
 - - -
 
