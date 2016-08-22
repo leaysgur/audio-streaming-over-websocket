@@ -1,7 +1,8 @@
 # audio-streaming-over-websocket
-株式会社ピクセルグリッド 2016春の開発合宿 in 八丈島での成果物。
 
 ![動作イメージ](./demo-img.jpg)
+
+株式会社ピクセルグリッド 2016春の開発合宿 in 八丈島での成果物。
 
 ## 作ってみての学び
 http://leader22.github.io/slides/asows/
